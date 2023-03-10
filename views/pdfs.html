@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>exo</title>
+  </head>
+
+  <body>
+    <header>
+      <nav>
+        <a href="/">Uploader un fichier</a> |
+        <a href="/pdfs">Tous les pdfs</a>
+      </nav>
+      <h2>Liste des pdfs</h2>
+    </header>
+    <br>
+    <main style="display: flex;">
+    </main>
+  </body>
+
+  <script>
+    fetch('http://localhost:3000/upload')
+    .then(res => res.json())
+    .then(data => {
+      data.files.forEach(file => {
+        document.querySelector('main').innerHTML += `
+        <div>
+          <p style="text-align: center;">${file.name}</p>
+          <iframe src="${file.url}" height="500" width="400" style="margin: 1rem;" ></iframe>
+        </div>
+        `
+      })
+    })
+  </script>
+</html>

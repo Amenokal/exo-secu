@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>exo</title>
+  </head>
+
+  <body>
+    <header>
+      <nav>
+        <a href="/">Uploader un fichier</a> |
+        <a href="/pdfs">Tous les pdfs</a>
+      </nav>
+      <h2>Uploader un fichier</h2>
+    </header>
+    <br>
+    <br>
+    <br>
+    <main>
+      <button id="authBtn">Récupérer un jwt</button>
+      <form id='form' action="/" method="post" enctype='multipart/form-data'>
+        <label>Nom du fichier</label>
+        <input name="name" type="text"/>
+        <br>
+        <label>Ajouter un fichier</label>
+        <input name="file" type="file"/>
+        <br>
+        <button id="uploadBtn">Uploader</button>
+      </form>
+      <p id="errorMsg"></p>
+    </main>
+  </body>
+
+  <script>
+    const STORAGE_KEY = "exo-secu-jwt"
+    
+    // Get a jwt
+    document.getElementById('authBtn').addEventListener('click', async () => {
+      fetch('http://localhost:3000/auth', {method: "POST"})
+      .then((res) => res.json())
+      .then(({jwt}) =>  localStorage.setItem("exo-secu-jwt", jwt))
+    })
+
+    // Upload pdf
+    document.getElementById('form').addEventListener('submit', async (e) => {
+      e.preventDefault()
+
+      const formData = new FormData(document.getElementById('form'))
+      formData.append('jwt', localStorage.getItem(STORAGE_KEY))
+      
+      fetch('http://localhost:3000/upload', {method: "POST", body: formData})
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('errorMsg').innerText = data.errorMsg || data.message
+      })
+    })
+  </script>
+</html>
